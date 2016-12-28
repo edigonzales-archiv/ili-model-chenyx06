@@ -1,0 +1,9 @@
+<OGRVRTDataSource>
+    <OGRVRTLayer name="tsp_lv03">
+        <SrcDataSource>tsp_lv03.csv</SrcDataSource>
+        <Field name="anumber" src="anumber" type="String" />
+        <Field name="ost" src="ost" type="Real" />
+        <Field name="nord" src="nord" type="Real" />
+        <Field name="state_of" src="state_of" type="Integer" />
+    </OGRVRTLayer>
+</OGRVRTDataSource>

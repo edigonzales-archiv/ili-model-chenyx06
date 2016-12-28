@@ -1,0 +1,8 @@
+/usr/local/gdal_master/bin/ogrinfo -al tsp_lv03.vrt
+
+/usr/local/gdal_master/bin/ogr2ogr -append -nln av_chenyx06_datenumbau.tsp_lv03 -f "PostgreSQL" PG:"host=localhost dbname=xanadu2 user=stefan password=ziegler12" tsp_lv03.vrt
+
+
+/usr/local/gdal_master/bin/ogrinfo -al tsp_lv95.vrt
+
+/usr/local/gdal_master/bin/ogr2ogr -append -nln av_chenyx06_datenumbau.tsp_lv95 -f "PostgreSQL" PG:"host=localhost dbname=xanadu2 user=stefan password=ziegler12" tsp_lv95.vrt

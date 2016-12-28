@@ -1,0 +1,27 @@
+INTERLIS 2.3;
+
+!!@ technicalContact=mailto:agi@bd.so.ch
+!!@ furtherInformation=http://models.geo.so.ch/AGI/SO_CHENyx06_2016-05-27.pdf
+!!@ IDGeoIV=SO-1005
+MODEL SO_CHENyx06_20160527 (de)
+AT "mailto:stefan.ziegler@bd.so.ch"
+VERSION "2016-05-27"  =
+  IMPORTS GeometryCHLV03_V1,GeometryCHLV95_V1;
+
+  TOPIC CHENyx06 =
+    OID AS INTERLIS.UUIDOID;
+
+    CLASS CHENyx06 =
+      Nummer : MANDATORY TEXT*6;
+      Nom : MANDATORY TEXT*26;
+      Jahr_definiert : MANDATORY INTERLIS.XMLDate;
+      Jahr_eliminiert : INTERLIS.XMLDate;
+      geom_lv03 : MANDATORY GeometryCHLV03_V1.Area;
+      geom_lv95 : MANDATORY GeometryCHLV95_V1.Area;
+      UNIQUE Nummer;
+      UNIQUE Nom;
+    END CHENyx06;
+
+  END CHENyx06;
+
+END SO_CHENyx06_20160527.

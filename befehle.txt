@@ -1,0 +1,74 @@
+
+# Schema-Import
+java -jar /home/stefan/Apps/ili2pg-3.0.3/ili2pg.jar --dbhost localhost --dbport 5432 --dbdatabase xanadu2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 21781 --createGeomIdx --strokeArcs --createUnique --nameByTopic --dbschema av_chenyx06_test1 --modeldir "http://models.geo.admin.ch;." --models SO_CHENyx06_20160701 --schemaimport
+
+
+
+# Export
+java -jar /home/stefan/Apps/ili2pg-3.0.3/ili2pg.jar --dbhost localhost --dbport 5432 --dbdatabase xanadu2 --dbusr stefan --dbpwd ziegler12  --dbschema av_chenyx06_test1 --modeldir "http://models.geo.admin.ch;." --models SO_CHENyx06_20160701 --export SO_CHENyx06.xtf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Version 01
+
+
+# Schema-Import
+# Achtung: Es kann nur ein SRS pro Modell gesetzt werden.
+# Nach Schema-Import manuell abändern.
+java -jar /home/stefan/Apps/ili2pg-3.0.3/ili2pg.jar --dbhost localhost --dbport 5432 --dbdatabase xanadu2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode  21781 --createGeomIdx --strokeArcs --createUnique --nameByTopic --dbschema av_chenyx06 --modeldir "http://models.geo.admin.ch;." --models SO_CHENyx06_20160527 --schemaimport
+
+
+# Ändern des EPSG-Codes der LV95-Geometrie-Tabelle.
+ALTER TABLE av_chenyx06.chenyx06_chenyx06 
+  ALTER COLUMN geom_lv95 TYPE geometry(Polygon, 2056) 
+    USING ST_SetSRID(geom_lv95, 2056);
+
+
+# Datenumbau
+INSERT INTO av_chenyx06.chenyx06_chenyx06 (nummer, nom, jahr_definiert, jahr_eliminiert, geom_lv03, geom_lv95)
+SELECT num, nom, to_date(jahr_def::varchar, 'YYYY'), NULL::date AS jahr_elim, ST_SnapToGrid(the_geom_lv03, 0.001), ST_SnapToGrid(the_geom_lv95, 0.001)
+FROM av_chenyx06.chenyx06_triangles;
+
+
+# Datenexport
+java -jar /home/stefan/Apps/ili2pg-3.0.3/ili2pg.jar --dbhost localhost --dbport 5432 --dbdatabase xanadu2 --dbusr stefan --dbpwd ziegler12  --dbschema av_chenyx06 --modeldir "http://models.geo.admin.ch;." --models SO_CHENyx06_20160527 --export SO_CHENyx06.xtf
+
+
+## Was passiert / geht der Datenimport?
+## Direkt Importieren und dann SetSrid ohne Transformation.
+
+# Import 
+java -jar /home/stefan/Apps/ili2pg-3.0.3/ili2pg.jar --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode  21781 --createGeomIdx --strokeArcs --createUnique --nameByTopic --dbschema av_chenyx06 --modeldir "http://models.geo.admin.ch;." --models SO_CHENyx06_20160527 --import SO_CHENyx06.xtf
+
+
+SELECT geom_lv95
+FROM av_chenyx06.chenyx06_chenyx06
+LIMIT 1;
+
+"01030000201555000001000000040000005A643B7F72FB43412B87167909553341A69BC4300205444146B6F37D8A50334133333343DBFC434125068115C34833415A643B7F72FB43412B87167909553341"
+
+"01030000200808000001000000040000005A643B7F72FB43412B87167909553341A69BC4300205444146B6F37D8A50334133333343DBFC434125068115C34833415A643B7F72FB43412B87167909553341"
+
+
+SELECT ST_AsEWK(geom_lv95)
+FROM av_chenyx06.chenyx06_chenyx06
+LIMIT 1;
+
+"SRID=21781;POLYGON((2619108.994 1266953.473,2624004.381 1265802.492,2619830.525 1263811.084,2619108.994 1266953.473))"
+"SRID=2056;POLYGON((2619108.994 1266953.473,2624004.381 1265802.492,2619830.525 1263811.084,2619108.994 1266953.473))"
+

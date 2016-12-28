@@ -1,0 +1,54 @@
+INTERLIS 2.3;
+
+!!@ technicalContact=mailto:agi@bd.so.ch
+!!@ furtherInformation=http://models.geo.so.ch/AGI/SO_CHENyx06_2016-05-27.pdf
+!!@ IDGeoIV=SO-1005
+CONTRACTED MODEL SO_CHENyx06_20160701 (en)
+AT "mailto:stefan.ziegler@bd.so.ch"
+VERSION "2016-07-01"  =
+  IMPORTS GeometryCHLV03_V1,GeometryCHLV95_V1;
+
+  TOPIC CHENyx06 =
+    OID AS INTERLIS.UUIDOID;
+
+    CLASS Triangle =
+      Name : MANDATORY TEXT*6;
+      State_of : MANDATORY INTERLIS.GregorianYear;
+      UNIQUE Name;
+    END Triangle;
+
+    CLASS TSP =
+      Number : MANDATORY TEXT*12;
+      UNIQUE Number;
+    END TSP;
+
+    CLASS TSP_Geometry_LV03 =
+      Geometry : MANDATORY GeometryCHLV03_V1.Coord2;
+      State_of : MANDATORY INTERLIS.GregorianYear;
+      UNIQUE Geometry;
+    END TSP_Geometry_LV03;
+
+    CLASS TSP_Geometry_LV95 =
+      Geometry : MANDATORY GeometryCHLV95_V1.Coord2;
+      State_of : MANDATORY INTERLIS.GregorianYear;
+      UNIQUE Geometry;
+    END TSP_Geometry_LV95;
+
+    ASSOCIATION TSP_Geom_LV03 =
+      Geom_LV03 -- {1} TSP_Geometry_LV03;
+      TSP_Number_LV03 -<#> {1} TSP;
+    END TSP_Geom_LV03;
+
+    ASSOCIATION TSP_Geom_LV95 =
+      Geom_LV95 -- {1} TSP_Geometry_LV95;
+      TSP_Number_LV95 -<#> {1} TSP;
+    END TSP_Geom_LV95;
+
+    ASSOCIATION TSP_Triangle =
+      Triangle_Name -- {1..*} Triangle;
+      TSP_Number (ORDERED) -- {1..*} TSP;
+    END TSP_Triangle;
+
+  END CHENyx06;
+
+END SO_CHENyx06_20160701.
